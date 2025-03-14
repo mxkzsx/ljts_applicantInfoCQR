@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>信息转二维码生成器</title>
+    <style>
+        body { 
+            font-family: Arial; 
+            padding: 15px; 
+            max-width: 600px; 
+            margin: 0 auto; /* 居中显示 */
+        }
+        .form-group { 
+            margin-bottom: 15px; 
+        }
+        input, textarea { 
+            width: 100%; 
+            padding: 8px; 
+            border: 1px solid #ddd; 
+            border-radius: 4px; 
+        }
+        button { 
+            background: #007bff; 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+        }
+        #qrcode { 
+            margin-top: 20px; 
+            text-align: center; 
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+    <!-- 内容将在后续步骤添加 -->
+    <h2>离境退税境外旅客身份识别码生成</h2>
+<form id="infoForm">
+    <div class="form-group">
+        <label>Name：</label>
+        <input type="text" id="name" required>
+    </div>
+    <div class="form-group">
+        <label>CountryCode：</label>
+        <input type="text" id="gjdm" required>
+    </div>
+
+    <div class="form-group">
+        <label>ID Number：</label>
+        <input type="tel" id="phone" pattern="[0-9]{11}" required>
+    </div>
+    <div class="form-group">
+        <label>ID Type：</label>
+        <input type="text" id="zjlx" required>
+    </div>
+    <div class="form-group">
+        <label>Bank Card Type：</label>
+        <input type="text" id="yhklx" required>
+    </div>
+    <div class="form-group">
+        <label>Bank Card Number：</label>
+        <input type="text" id="yhkh" required>
+    </div>
+    <div class="form-group">
+        <label>Bank Card Expiry Date：</label>
+        <input type="text" id="yhkyxq" required>
+    </div>
+    <div class="form-group">
+        <label>Tel：</label>
+        <input type="text" id="lkdh" required>
+    </div>
+    <div class="form-group">
+        <label>Email：</label>
+        <input type="text" id="lkemail" required>
+    </div>
+    <div class="form-group">
+        <label>备注：</label>
+        <textarea id="remark" rows="3"></textarea>
+    </div>
+    <button type="submit">生成二维码</button>
+</form>
+<div id="qrcode"></div>
+<script>
+    document.getElementById("infoForm").addEventListener("submit", function(e) {
+        e.preventDefault(); // 阻止表单默认提交
+        
+        // 1. 采集数据
+        const data = {
+            name: document.getElementById("name").value,
+            phone: document.getElementById("phone").value,
+            remark: document.getElementById("remark").value,
+            timestamp: new Date().toLocaleString()
+        };
+
+        // 2. 自定义规则加工（示例：Base64编码）
+        const processedData = btoa(JSON.stringify(data));
+
+        // 3. 生成二维码
+        const qrContainer = document.getElementById("qrcode");
+        qrContainer.innerHTML = ""; // 清空旧内容
+        new QRCode(qrContainer, {
+            text: processedData,
+            width: 200,
+            height: 200,
+            correctLevel: QRCode.CorrectLevel.H // 容错级别高
+        });
+    });
+</script>
+</body>
+</html>
