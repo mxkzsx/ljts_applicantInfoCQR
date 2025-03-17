@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>信息转二维码生成器</title>
+    <title>离境退税-信息转二维码生成器</title>
     <style>
         body { 
             font-family: Arial; 
@@ -30,14 +30,17 @@
         }
         #qrcode { 
             margin-top: 20px; 
-            text-align: center; 
+            text-align: left; 
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 </head>
 <body>
     <!-- 内容将在后续步骤添加 -->
-    <h2>离境退税境外旅客身份识别码生成</h2>
+    <h2>離境退稅境外旅客身份信息識別碼生成</h2>
+    <h5>提示：本頁面不收集、不上傳任何信息，僅將填寫內容轉為二維碼。生成二維碼可提高離境退稅業務辦理效率。<br>Tips:This page does not collect or upload any information; it solely converts entered details into a QR code. Generating this code will expedite the departure tax refund process.</h5>
+    <!-- <h5>tips：。</h5> -->
+    <h5></h5>
 <form id="infoForm">
     <div class="form-group">
         <label>Name：</label>
@@ -50,7 +53,8 @@
 
     <div class="form-group">
         <label>ID Number：</label>
-        <input type="tel" id="phone" pattern="[0-9]{11}" required>
+        <!-- <input type="tel" id="phone" pattern="[0-9]{11}" required> -->
+        <input type="tel" id="phone"  required>
     </div>
     <div class="form-group">
         <label>ID Type：</label>
@@ -76,10 +80,10 @@
         <label>Email：</label>
         <input type="text" id="lkemail" required>
     </div>
-    <div class="form-group">
+    <!-- <div class="form-group">
         <label>备注：</label>
         <textarea id="remark" rows="3"></textarea>
-    </div>
+    </div> -->
     <button type="submit">生成二维码</button>
 </form>
 <div id="qrcode"></div>
