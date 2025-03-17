@@ -28,6 +28,12 @@
             border-radius: 4px; 
             cursor: pointer; 
         }
+        select {
+            width: 80%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
         #qrcode { 
             margin-top: 20px; 
             text-align: center; 
@@ -37,50 +43,57 @@
 </head>
 <body>
     <!-- 内容将在后续步骤添加 -->
-    <h2>离境退税境外旅客身份识别码生成</h2>
+    <h2>離境退稅境外旅客身份信息識別碼生成<br>Departure Tax Refund Visitor ID Code Generation</h2>
+    <h5>提示：本頁面不收集、不上傳任何信息，僅將填寫內容轉為二維碼。生成二維碼可提高離境退稅業務辦理效率。<br>Tips:This page does not collect or upload any information; it solely converts entered details into a QR code. Generating this code will expedite the departure tax refund process.</h5>
 <form id="infoForm">
     <div class="form-group">
-        <label>Name：</label>
+        <label>姓名(Name)：</label>
         <input type="text" id="name" required>
     </div>
     <div class="form-group">
-        <label>CountryCode：</label>
-        <input type="text" id="gjdm" required >
+        <label>國家代碼(CountryCode)：</label>
+        <input type="text" id="gjdm" placeholder="請輸入大寫英文字母，例如：CHN / USA / AUS..." pattern="[A-Z]{3}" required >
     </div>
 
     <div class="form-group">
-        <label>ID Number：</label>
-        <input type="tel" id="phone" pattern="[0-9]{11}" required>
+        <label>證件號碼(ID Number)：</label>
+        <!-- <input type="tel" id="phone" pattern="[0-9]{11}" required> -->
+        <input type="tel" id="phone" required>
     </div>
     <div class="form-group">
-        <label>ID Type：</label>
-        <input type="text" id="zjlx" required>
+        <label>證件類型(ID Type)：</label>
+        <!-- <input type="text" id="zjlx" required> -->
+        <select name="SelectType">
+            <option value="1" selected>護照-Passport</option>
+            <option value="2">港澳同胞回鄉證-HongKong and Macau Pass</option>
+            <option value="3">台胞證-MTP</option>
+          </select>
     </div>
     <div class="form-group">
-        <label>Bank Card Type：</label>
-        <input type="text" id="yhklx" required>
+        <label>銀行卡類型(Bank Card Type)：</label>
+        <input type="text" id="yhklx" placeholder="請輸卡片類型，例如：VISA / MasterCard ..."  required>
     </div>
     <div class="form-group">
-        <label>Bank Card Number：</label>
+        <label>銀行卡號(Bank Card Number)：</label>
         <input type="text" id="yhkh" required>
     </div>
     <div class="form-group">
-        <label>Bank Card Expiry Date：</label>
+        <label>銀行卡有效截止日期(Bank Card Expiry Date)：</label>
         <input type="text" id="yhkyxq" required>
     </div>
     <div class="form-group">
-        <label>Tel：</label>
+        <label>手機號碼(Tel)：</label>
         <input type="text" id="lkdh" required>
     </div>
     <div class="form-group">
-        <label>Email：</label>
+        <label>電子郵箱(Email)：</label>
         <input type="text" id="lkemail" required>
     </div>
-    <div class="form-group">
+    <!-- <div class="form-group">
         <label>备注：</label>
         <textarea id="remark" rows="3"></textarea>
-    </div>
-    <button type="submit">生成二维码</button>
+    </div> -->
+    <button type="submit">生成二維碼<br>Generate QR Code</button>
 </form>
 <div id="qrcode"></div>
 <script>
