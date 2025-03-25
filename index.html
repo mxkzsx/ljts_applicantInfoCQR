@@ -1,126 +1,257 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>信息转二维码生成器</title>
     <style>
-        body { 
-            font-family: Arial; 
-            padding: 15px; 
-            max-width: 600px; 
-            margin: 0 auto; /* 居中显示 */
+        body {
+            font-family: Arial;
+            padding: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+            /* 居中显示 */
         }
-        .form-group { 
-            margin-bottom: 15px; 
+
+        .form-group {
+            margin-bottom: 15px;
         }
-        input, textarea { 
-            width: 100%; 
-            padding: 8px; 
-            border: 1px solid #ddd; 
-            border-radius: 4px; 
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
-        button { 
-            background: #007bff; 
-            color: white; 
-            border: none; 
-            padding: 10px 20px; 
-            border-radius: 4px; 
-            cursor: pointer; 
+
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
         }
+
         select {
             width: 80%;
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 4px;
         }
-        #qrcode { 
-            margin-top: 20px; 
-            text-align: center; 
+
+        #qrcode {
+            margin-top: 20px;
+            text-align: center;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 </head>
+
 <body>
     <!-- 内容将在后续步骤添加 -->
     <h2>離境退稅境外旅客身份信息識別碼生成<br>Departure Tax Refund Visitor ID Code Generation</h2>
-    <h5>提示：本頁面不收集、不上傳任何信息，僅將填寫內容轉為二維碼。生成二維碼可提高離境退稅業務辦理效率。<br>Tips:This page does not collect or upload any information; it solely converts entered details into a QR code. Generating this code will expedite the departure tax refund process.</h5>
-<form id="infoForm">
-    <div class="form-group">
-        <label>姓名(Name)：</label>
-        <input type="text" id="name" required>
-    </div>
-    <div class="form-group">
-        <label>國家代碼(CountryCode)：</label>
-        <input type="text" id="gjdm" placeholder="請輸入大寫英文字母，例如：CHN / USA / AUS..." pattern="[A-Z]{3}" required >
-    </div>
+    <h5>提示：本頁面不收集、不上傳任何信息，僅將填寫內容轉為二維碼。生成二維碼可提高離境退稅業務辦理效率。<br>Tips:This page does not collect or upload any information;
+        it solely converts entered details into a QR code. Generating this code will expedite the departure tax refund
+        process.</h5>
+    <form id="infoForm">
+        <div class="form-group">
+            <label>姓名(Name)：</label>
+            <input type="text" id="name" required>
+        </div>
+        <div class="form-group">
+            <label>國家代碼(CountryCode)：</label>
+            <input type="text" id="gjdm" placeholder="請輸入大寫英文字母，例如：CHN / USA / AUS..." pattern="[A-Z]{3}" required>
+        </div>
 
-    <div class="form-group">
-        <label>證件號碼(ID Number)：</label>
-        <!-- <input type="tel" id="phone" pattern="[0-9]{11}" required> -->
-        <input type="tel" id="phone" required>
-    </div>
-    <div class="form-group">
-        <label>證件類型(ID Type)：</label>
-        <!-- <input type="text" id="zjlx" required> -->
-        <select name="SelectType">
-            <option value="1" selected>護照-Passport</option>
-            <option value="2">港澳同胞回鄉證-HongKong and Macau Pass</option>
-            <option value="3">台胞證-MTP</option>
-          </select>
-    </div>
-    <div class="form-group">
-        <label>銀行卡類型(Bank Card Type)：</label>
-        <input type="text" id="yhklx" placeholder="請輸卡片類型，例如：VISA / MasterCard ..."  required>
-    </div>
-    <div class="form-group">
-        <label>銀行卡號(Bank Card Number)：</label>
-        <input type="text" id="yhkh" required>
-    </div>
-    <div class="form-group">
-        <label>銀行卡有效截止日期(Bank Card Expiry Date)：</label>
-        <input type="text" id="yhkyxq" required>
-    </div>
-    <div class="form-group">
-        <label>手機號碼(Tel)：</label>
-        <input type="text" id="lkdh" required>
-    </div>
-    <div class="form-group">
-        <label>電子郵箱(Email)：</label>
-        <input type="text" id="lkemail" required>
-    </div>
-    <!-- <div class="form-group">
-        <label>备注：</label>
-        <textarea id="remark" rows="3"></textarea>
-    </div> -->
-    <button type="submit">生成二維碼<br>Generate QR Code</button>
-</form>
-<div id="qrcode"></div>
-<script>
-    document.getElementById("infoForm").addEventListener("submit", function(e) {
-        e.preventDefault(); // 阻止表单默认提交
-        
-        // 1. 采集数据
-        const data = {
-            name: document.getElementById("name").value,
-            phone: document.getElementById("phone").value,
-            remark: document.getElementById("remark").value,
-            timestamp: new Date().toLocaleString()
-        };
+        <div class="form-group">
+            <label>證件號碼(ID Number)：</label>
+            <!-- <input type="tel" id="phone" pattern="[0-9]{11}" required> -->
+            <input type="tel" id="zjhm" required>
+        </div>
+        <div class="form-group">
+            <label>證件類型(ID Type)：</label>
+            <!-- <input type="text" id="zjlx" required> -->
+            <select id="SelectType">
+                <option value="1" selected>護照-Passport</option>
+                <option value="2">港澳同胞回鄉證-HongKong and Macau Pass</option>
+                <option value="3">台胞證-MTP</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>銀行卡類型(Bank Card Type)：</label>
+            <input type="text" id="yhklx" placeholder="請輸卡片類型，例如：VISA / MasterCard ..." required>
+        </div>
+        <div class="form-group">
+            <label>銀行卡號(Bank Card Number)：</label>
+            <input type="text" id="yhkh" required>
+        </div>
+        <div class="form-group">
+            <label>銀行卡有效截止日期(Bank Card Expiry Date)：</label>
+            <!-- <input type="text" id="yhkyxq" required> -->
+            <select id="yearSelect"></select>
+            <br><br>
+            <select id="monthSelect">
+                <option value="01">01</option>
+                <option value="02">02</option>
+                <option value="03">03</option>
+                <option value="04">04</option>
+                <option value="05">05</option>
+                <option value="06">06</option>
+                <option value="07">07</option>
+                <option value="08">08</option>
+                <option value="09">09</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+            </select>
 
-        // 2. 自定义规则加工（示例：Base64编码）
-        const processedData = btoa(JSON.stringify(data));
+        </div>
+        <div class="form-group">
+            <label>手機號碼(Tel)：</label>
+            <input type="text" id="lkdh" required>
+        </div>
+        <div class="form-group">
+            <label>電子郵箱(Email)：</label>
+            <input type="text" id="lkemail" required>
+        </div>     
+        <button type="submit">生成二維碼<br>Generate QR Code</button>    
+        <div id="output"></div>
+    </form>
+    <div id="qrcode"></div>
+    <script>
+        let debugCheckCounter = 0;
+           const select = document.getElementById('yearSelect');
+                for (let year = 2025; year <= 2055; year++) {
+                    const option = document.createElement('option');
+                    option.value = year;
+                    option.textContent = year;
+                    select.appendChild(option);
+                };
+            const STATIC_CONSTANT = {
+                components: [
+                    0x24 ^ 0x3F, // 
+                    0x4C ^ 0x3F, // 
+                    0x6A ^ 0x3F, // 
+                    0x74 ^ 0x3F, // 
+                    0x73 ^ 0x3F, // 
+                    0x5F ^ 0x3F, // 
+                    0x44 ^ 0x3F, // 
+                    0x64 ^ 0x3F, // 
+                    0x73 ^ 0x3F, //
+                    0x64 ^ 0x3F  //
+                ]
+            };
+            document.getElementById("infoForm").addEventListener("submit", function (e) {
+                e.preventDefault(); 
+                const getmonthSelect = document.getElementById('monthSelect');
+                const getyearSelect = document.getElementById('yearSelect');
+                const getYhkyxq = getyearSelect.value + getmonthSelect.value;
+                const getzjlx = document.getElementById('SelectType');
+                const getName = document.getElementById('name');
+                const getGjdm = document.getElementById('gjdm');
+                const getZjhm = document.getElementById('zjhm');
+                const getYhklx = document.getElementById('yhklx');
+                const getYhkh = document.getElementById('yhkh');
+                const getlkdh = document.getElementById('lkdh');
+                const getLkemail = document.getElementById('lkemail');
+                const tempKey = generateKey();             
+               const encrptvalue= encrypt(tempKey, getGjdm.value);
+                setTimeout(() => { tempKey = null; }, 0);
+                const lkxx = {
+                    jyw:encrptvalue,
+                    name: getName.value,
+                    gjdm: getGjdm.value,
+                    zjhm: getZjhm.value,
+                    zjlx: getzjlx.value,
+                    yhkyxq: getYhkyxq,
+                    yhkh: getYhkh.value,
+                    lkdh: getlkdh.value,
+                    lkemail: getLkemail.value,
+                    yhklx: getYhklx.value,                    
+                }
+                const values = Object.values(lkxx).join(', ')            
 
-        // 3. 生成二维码
-        const qrContainer = document.getElementById("qrcode");
-        qrContainer.innerHTML = ""; // 清空旧内容
-        new QRCode(qrContainer, {
-            text: processedData,
-            width: 200,
-            height: 200,
-            correctLevel: QRCode.CorrectLevel.H // 容错级别高
-        });
-    });
-</script>
+                const qrContainer = document.getElementById("qrcode");
+                qrContainer.innerHTML = ""; // 清空旧内容
+                new QRCode(qrContainer, {
+                    text: values,
+                    width: 200,
+                    height: 200,
+                    correctLevel: QRCode.CorrectLevel.H //
+                });
+                 function processDate() {
+                    const d = new Date();
+                    const pad = n => String(n).padStart(2, '0');
+                    return [
+                        d.getFullYear(),
+                        pad(d.getMonth() + 1),
+                        pad(d.getDate())
+                    ].join('');
+                }                
+                function securityCheck() {
+                    const start = performance.now();
+                    console.debug('SecurityCheck'); 
+                    const delta = performance.now() - start;
+                    if (delta > 0.5 || debugCheckCounter++ > 10) {           
+                        return false; // 
+                    }
+                    return true;
+                }
+                function xorDecrypt(data, key) {
+                    return data.map(c => String.fromCharCode(c ^ key)).join('');
+                }
+                function generateKey() {
+                    try {
+                        const rawDate = processDate();                       
+                        const dateEncrypted = Array.from(rawDate).map(c => c.charCodeAt(0) ^ 0xA5);
+                        // 阶段2：解密静态部分
+                        const staticPart = xorDecrypt(STATIC_CONSTANT.components, 0x3F);                       
+                        // 阶段3：安全检测
+                        if (!securityCheck()) {
+                            return `RAND_${Math.random().toString(36).slice(2, 9)}`;
+                        }
+                        // 最终组合
+                        return `${xorDecrypt(dateEncrypted, 0xA5)}${staticPart}`;
+                    } catch (e) {
+                        console.error(`[密钥生成失败] ${e.message}`);
+                        return "ERR_KEY_GEN_FAILURE";
+                    }
+                }
+                function gbkEncode(str) {
+                    const encoder = new TextEncoder('gbk');
+                    return encoder.encode(str);
+                };
+                function encrypt(strK, strV) {
+                    // 获取输入内容
+                    const inputString = strV;
+                    const inputKey = strK;                   
+                    try {
+                        const keyGBK = gbkEncode(inputKey);          
+                        const keyWordArray = CryptoJS.lib.WordArray.create(keyGBK);
+                        const keyMd5 = CryptoJS.MD5(keyWordArray);
+                        const inputGBK = gbkEncode(inputString);
+                        const inputWordArray = CryptoJS.lib.WordArray.create(inputGBK);
+                        const encrypted = CryptoJS.TripleDES.encrypt(
+                            inputWordArray,  
+                            keyMd5,
+                            {
+                                mode: CryptoJS.mode.ECB,
+                                padding: CryptoJS.pad.Pkcs7
+                            }
+                        );
+                        const encryptedBase64 = encrypted.ciphertext.toString(CryptoJS.enc.Base64);
+                        return encryptedBase64;
+                    } catch (error) {
+                        alert("生成失败：" + error.message);
+                        return '';
+                    }
+                };
+            });
+    </script>
 </body>
+
 </html>
